@@ -1,0 +1,91 @@
+.login {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: green; */
+}
+
+.loginBox {
+  /* height: 400px; */
+  width: 400px;
+  padding: 100px 50px 150px 50px;
+  /* background-color: grey; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 3rem;
+  /* background-color: red; */
+}
+
+.loginText {
+  font-size: 5rem;
+  padding: 0 0;
+  margin: 0 0 40px 0;
+}
+
+.username,
+.password {
+  height: 70px;
+  width: 90%;
+  background-color: white;
+  margin-top: 20px;
+  border-radius: 50px;
+  outline: none;
+  transition: 0.3s;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  padding: 0 20px;
+  color: black;
+}
+
+.username:focus,
+.password:focus {
+  border-color: #007bff;
+  /* height: 80px; */
+  box-shadow: 0 0 5px rgba(69, 105, 145, 0.4);
+}
+
+.username::placeholder,
+.password::placeholder {
+  color: #bebebe; /* placeholder text color */
+}
+
+.loginButton {
+  width: 50%;
+  height: 70px;
+  padding: 12px;
+  margin-top: 15px;
+  border: 1px solid rgb(97, 97, 97);
+  border-radius: 50px;
+  background-color: #000000;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease,
+    border 0.3s ease;
+}
+
+.loginButton:hover {
+  background-color: #ffffff;
+  color: black;
+  transform: scale(1.05);
+}
+
+.signupQues {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.signupLink {
+  color: #2575fc; /* or any accent color */
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+}
