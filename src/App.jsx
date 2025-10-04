@@ -1,78 +1,29 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
-const LoginPage = lazy(() => import("./components/authpage/LoginPage"));
-const Hero = lazy(() => import("./components/hero/Hero"));
-const MenuBar = lazy(() => import("./components/menubar/MenuBar"));
-const SplashScreen = lazy(() => import("./components/splash/SplashScreen"));
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { auth } from "./components/authpage/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { div } from "framer-motion/client";
 
-// 🔒 Protected Route Component
+// Lazy-loaded components
+// const LoginPage = lazy(() => import("./components/authpage/LoginPage"));
+// const SplashScreen = lazy(() => import("./components/splash/SplashScreen"));
+import SplashScreen from "./components/splash/SplashScreen";
+import LoginPage from "./components/authpage/LoginPage";
+const Hero = lazy(() => import("./components/hero/Hero"));
+const MenuBar = lazy(() => import("./components/menubar/MenuBar"));
+
+// Protected Route
 const ProtectedRoute = ({ user, children }) => {
-  if (!user) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="login" replace />; // relative path with basename
   return children;
 };
 
-const App = () => {
-  const [user, setUser] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
-
-  // ✅ Track authentication state
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setAuthChecked(true);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // ✅ Control splash visibility
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // ✅ Wait for auth check & splash to complete
-  if (!authChecked || showSplash) return <SplashScreen />;
-
-  return (
-    <Suspense fallback={<div className="loader">Loading...</div>}>
-      <Router>
-        <Routes>
-          {/* 🏠 Public Route */}
-          <Route
-            path="/"
-            element={user ? <Navigate to="/hero" replace /> : <LoginPage />}
-          />
-
-          {/* 🔐 Protected Route */}
-          <Route
-            path="/hero"
-            element={
-              <ProtectedRoute user={user}>
-                <HeroBody
-                  onLogout={() => signOut(auth)}
-                  userEmail={user?.email}
-                />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* 🚫 Catch-all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </Suspense>
-  );
-};
-
+// Hero page wrapper
 const HeroBody = ({ onLogout, userEmail }) => {
   return (
     <div>
@@ -90,6 +41,95 @@ const HeroBody = ({ onLogout, userEmail }) => {
         <Hero />
       </Suspense>
     </div>
+  );
+};
+
+// App component
+const App = () => {
+  return (
+    <Router basename="/routine-website">
+      <AppRoutes />
+    </Router>
+  );
+};
+
+// Separate component to use useLocation for splash logic
+const AppRoutes = () => {
+  const location = useLocation();
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [showSplash, setShowSplash] = useState(
+    location.pathname === "/" && !sessionStorage.getItem("splashShown")
+  );
+
+  // Track authentication
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("Auth state changed:", currentUser);
+      setUser(currentUser);
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Splash screen timeout
+  useEffect(() => {
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem("splashShown", "true");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash]);
+
+  // Show splash while active or waiting for auth check
+  if (!authChecked || showSplash) {
+    return (
+      <Suspense fallback={<div className="loader">Loading splash...</div>}>
+        <SplashScreen />
+      </Suspense>
+    );
+  }
+
+  return (
+    <Suspense fallback={<div className="loader">Loading...</div>}>
+      <Routes>
+        {/* Root route */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Navigate to="hero" replace />
+            ) : (
+              <Navigate to="login" replace />
+            )
+          }
+        />
+
+        {/* Login page */}
+        <Route
+          path="/login"
+          element={user ? <Navigate to="hero" replace /> : <LoginPage />}
+        />
+
+        {/* Protected hero page */}
+        <Route
+          path="/hero"
+          element={
+            <ProtectedRoute user={user}>
+              <HeroBody
+                onLogout={() => signOut(auth)}
+                userEmail={user?.email}
+              />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 };
 
