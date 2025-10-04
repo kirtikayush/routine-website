@@ -1,1 +1,0 @@
-import{j as e}from"./index-9SNfGULJ.js";const t=({onLogout:s})=>e.jsxs("div",{className:"menu-bar",children:[e.jsx("div",{className:"menu-left",children:e.jsx("h2",{className:"logo",children:"Routine Website"})}),e.jsx("div",{className:"menu-right",children:e.jsx("button",{className:"logout-btn",onClick:s,children:"Logout"})})]});export{t as default};
