@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import "./LoginPage.css";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ const LoginPage = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [buttonText, setButtonText] = useState("Sign Up");
   const [isRegistering, setIsRegistering] = useState(false);
+  const navigate = useNavigate();
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -52,7 +54,8 @@ const LoginPage = () => {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert(`Logged in: ${email}`);
+      console.log(`Logged in: ${email}`);
+      navigate("/hero");
     } catch (error) {
       alert(error.message);
     }

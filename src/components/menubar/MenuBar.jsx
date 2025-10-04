@@ -1,10 +1,18 @@
 import React from "react";
 import "./MenuBar.css";
 
-const MenuBar = () => {
+const MenuBar = ({ onLogout }) => {
   return (
-    <div>
-      <div className="menubar">Daily Routine</div>
+    <div className="menu-bar">
+      <div className="menu-left">
+        <h2 className="logo">Routine Website</h2>
+      </div>
+
+      <div className="menu-right">
+        <button className="logout-btn" onClick={onLogout}>
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

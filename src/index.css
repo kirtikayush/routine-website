@@ -19,7 +19,11 @@ body {
   font-family: "DM Sans", sans-serif;
 
   /* Linear gradient background */
-  background: linear-gradient(135deg, #2c2f36, #1c1e23);
+
+  background: radial-gradient(circle at center, #0f172a, #020617);
+
+  /* background: linear-gradient(135deg, #2c2f36, #1c1e23); */
+
   /* background: linear-gradient(135deg, #f0f2f5, #d9dde3); */
   /* background: linear-gradient(135deg, #fefefe, #e6e6e6); */
   /* background: linear-gradient(135deg, #dff6f0, #f0f4f8); */
